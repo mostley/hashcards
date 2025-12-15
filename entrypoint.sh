@@ -16,27 +16,43 @@ echo "Using collection directory: $COLLECTION_DIR"
 
 # Create collection directory if it doesn't exist
 if [ ! -d "$COLLECTION_DIR" ]; then
-    echo "Creating collection directory: $COLLECTION_DIR"
-    mkdir -p "$COLLECTION_DIR"
+  echo "Creating collection directory: $COLLECTION_DIR"
+  mkdir -p "$COLLECTION_DIR"
 fi
 
 # Check if we have persistent storage
 if mountpoint -q "$COLLECTION_DIR" 2>/dev/null; then
-    echo "✅ Persistent storage detected at $COLLECTION_DIR"
+  echo "✅ Persistent storage detected at $COLLECTION_DIR"
 elif [ -w "$COLLECTION_DIR" ]; then
-    echo "⚠️  WARNING: Using container filesystem (data will be lost on restart)"
-    echo "   Configure Railway Volume at $COLLECTION_DIR for data persistence"
+  echo "⚠️  WARNING: Using container filesystem (data will be lost on restart)"
+  echo "   Configure Railway Volume at $COLLECTION_DIR for data persistence"
 else
-    echo "❌ ERROR: Cannot write to $COLLECTION_DIR"
-    exit 1
+  echo "❌ ERROR: Cannot write to $COLLECTION_DIR"
+  exit 1
 fi
 
-# Check if collection directory has any markdown files
-if [ -z "$(find "$COLLECTION_DIR" -name "*.md" -type f 2>/dev/null)" ]; then
-    echo "No markdown files found in $COLLECTION_DIR"
-    echo "Copying sample collection to get started..."
-    cp -r /app/sample-collection/* "$COLLECTION_DIR/"
-    echo "Sample collection copied successfully!"
+# Check collection version and update if needed
+COLLECTION_VERSION_FILE="$COLLECTION_DIR/.collection-version"
+CONTAINER_VERSION="v1"
+
+if [ -f "$COLLECTION_VERSION_FILE" ]; then
+  CURRENT_VERSION=$(cat "$COLLECTION_VERSION_FILE")
+  if [ "$CURRENT_VERSION" != "$CONTAINER_VERSION" ]; then
+    echo "Collection version mismatch. Current: $CURRENT_VERSION, Container: $CONTAINER_VERSION"
+    echo "Updating collection to learning content..."
+    rm -f "$COLLECTION_DIR"/*.md 2>/dev/null || true
+    cp -r /app/prod-collection/* "$COLLECTION_DIR/"
+    echo "$CONTAINER_VERSION" >"$COLLECTION_VERSION_FILE"
+    echo "Prod learning collection updated successfully!"
+  else
+    echo "Collection is up to date (version: $CONTAINER_VERSION)"
+  fi
+else
+  echo "No collection version found. Installing learning collection..."
+  rm -f "$COLLECTION_DIR"/*.md 2>/dev/null || true
+  cp -r /app/prod-collection/* "$COLLECTION_DIR/"
+  echo "$CONTAINER_VERSION" >"$COLLECTION_VERSION_FILE"
+  echo "Learning collection installed successfully!"
 fi
 
 # Set logging level if not already set
@@ -54,5 +70,6 @@ ls -la "$COLLECTION_DIR"/*.md 2>/dev/null || echo "No .md files found"
 # --open-browser false: Disable browser auto-opening for headless server
 # exec: Replace shell process for proper signal handling
 exec /app/hashcards drill "$COLLECTION_DIR" \
-    --port "$PORT" \
-    --open-browser false
+  --port "$PORT" \
+  --open-browser false
+
