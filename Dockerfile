@@ -28,7 +28,17 @@ COPY src ./src
 
 # Build KaTeX vendor assets (downloads and processes KaTeX v0.16.25)
 # This is required before cargo build as KaTeX assets are embedded in the binary
-RUN make vendor/katex
+# Manual setup to ensure compatibility with GNU sed in Linux
+RUN echo "Downloading KaTeX v0.16.25..." && \
+    mkdir -p vendor && \
+    curl -L -o vendor/katex.tar.gz https://github.com/KaTeX/KaTeX/releases/download/v0.16.25/katex.tar.gz && \
+    echo "Extracting KaTeX..." && \
+    tar -xzf vendor/katex.tar.gz -C vendor && \
+    rm vendor/katex.tar.gz && \
+    echo "Rewriting font paths in CSS for web serving..." && \
+    sed -i 's|fonts/|/katex/fonts/|g' vendor/katex/katex.min.css && \
+    echo "KaTeX setup complete" && \
+    ls -la vendor/katex/
 
 # Build the release binary with aggressive optimizations
 # Cargo.toml already configured with: strip=symbols, lto=true, codegen-units=1, panic=abort
