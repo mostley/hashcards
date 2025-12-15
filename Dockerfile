@@ -64,7 +64,7 @@ COPY --from=builder /build/target/release/hashcards /app/hashcards
 COPY --from=builder /build/vendor/katex /app/katex
 
 # Copy sample collection to provide default content
-COPY docker/sample-collection /app/sample-collection
+COPY docker/prod-collection /app/prod-collection
 
 # Copy and make entrypoint script executable
 COPY entrypoint.sh /app/entrypoint.sh

@@ -85,7 +85,7 @@ example/
 Dockerfile*
 .dockerignore
 docker-compose*.yml
-# Note: docker/sample-collection is included for the container
+# Note: docker/prod-collection is included for the container
 
 # Railway files
 railway.toml

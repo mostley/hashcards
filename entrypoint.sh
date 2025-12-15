@@ -72,4 +72,3 @@ ls -la "$COLLECTION_DIR"/*.md 2>/dev/null || echo "No .md files found"
 exec /app/hashcards drill "$COLLECTION_DIR" \
   --port "$PORT" \
   --open-browser false
-
