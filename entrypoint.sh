@@ -22,13 +22,10 @@ fi
 
 # Check if collection directory has any markdown files
 if [ -z "$(find "$COLLECTION_DIR" -name "*.md" -type f 2>/dev/null)" ]; then
-    echo "Warning: No markdown files found in $COLLECTION_DIR"
-    echo "The collection directory should contain .md files with flashcards"
-    echo "Example format:"
-    echo "  Q: What is the capital of France?"
-    echo "  A: Paris"
-    echo ""
-    echo "  C: The [mitochondria] is the powerhouse of the [cell]."
+    echo "No markdown files found in $COLLECTION_DIR"
+    echo "Copying sample collection to get started..."
+    cp -r /app/sample-collection/* "$COLLECTION_DIR/"
+    echo "Sample collection copied successfully!"
 fi
 
 # Set logging level if not already set
@@ -36,6 +33,11 @@ export RUST_LOG=${RUST_LOG:-info}
 
 echo "Starting hashcards drill session..."
 echo "Web interface will be available at http://localhost:$PORT"
+echo "Collection directory: $COLLECTION_DIR"
+
+# List available decks for debugging
+echo "Available decks:"
+ls -la "$COLLECTION_DIR"/*.md 2>/dev/null || echo "No .md files found"
 
 # Execute hashcards with proper arguments for server deployment
 # --open-browser false: Disable browser auto-opening for headless server

@@ -65,9 +65,7 @@ deny.toml
 pre-commit.sh
 .pre-commit-config.yaml
 
-# Documentation (not needed for build)
-*.md
-!README.md
+# Documentation (README needed for reference, sample collection needed for container)
 docs/
 doc/
 
@@ -87,6 +85,7 @@ example/
 Dockerfile*
 .dockerignore
 docker-compose*.yml
+# Note: docker/sample-collection is included for the container
 
 # Railway files
 railway.toml

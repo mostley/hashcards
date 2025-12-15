@@ -63,6 +63,9 @@ COPY --from=builder /build/target/release/hashcards /app/hashcards
 # Copy KaTeX assets from builder stage (embedded at build time but also needed for /katex/* endpoints)
 COPY --from=builder /build/vendor/katex /app/katex
 
+# Copy sample collection to provide default content
+COPY docker/sample-collection /app/sample-collection
+
 # Copy and make entrypoint script executable
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
@@ -70,16 +73,11 @@ RUN chmod +x /app/entrypoint.sh
 # Create data directory for collection mounting
 RUN mkdir -p /data && chmod 755 /data
 
-# Create non-root user for security (optional but good practice)
-RUN groupadd -r hashcards && useradd -r -g hashcards hashcards && \
-    chown -R hashcards:hashcards /app /data
-USER hashcards
-
 # Expose port 8000 (default hashcards port)
 EXPOSE 8000
 
-# Add health check to verify service is running
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+# Add health check to verify service is running (simplified)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:8000/ || exit 1
 
 # Set entrypoint to our script that handles Railway PORT env var
