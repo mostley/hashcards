@@ -20,6 +20,17 @@ if [ ! -d "$COLLECTION_DIR" ]; then
     mkdir -p "$COLLECTION_DIR"
 fi
 
+# Check if we have persistent storage
+if mountpoint -q "$COLLECTION_DIR" 2>/dev/null; then
+    echo "✅ Persistent storage detected at $COLLECTION_DIR"
+elif [ -w "$COLLECTION_DIR" ]; then
+    echo "⚠️  WARNING: Using container filesystem (data will be lost on restart)"
+    echo "   Configure Railway Volume at $COLLECTION_DIR for data persistence"
+else
+    echo "❌ ERROR: Cannot write to $COLLECTION_DIR"
+    exit 1
+fi
+
 # Check if collection directory has any markdown files
 if [ -z "$(find "$COLLECTION_DIR" -name "*.md" -type f 2>/dev/null)" ]; then
     echo "No markdown files found in $COLLECTION_DIR"
