@@ -1,0 +1,99 @@
+# .dockerignore for hashcards
+# Optimizes Docker build context by excluding unnecessary files
+
+# Git
+.git
+.gitignore
+.github/
+*.git*
+
+# Build artifacts
+target/
+vendor/
+result/
+hashcards
+*.exe
+
+# Dependencies (will be built from scratch in container)
+node_modules/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+.netrwhist
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+Icon?
+
+# Development files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Nix files (if using nix for development)
+flake.lock
+flake.nix
+result*
+
+# Rust development
+# Note: Cargo.lock is included for Docker dependency layer caching
+
+# Test and temporary files
+test/
+tests/
+temp/
+tmp/
+*.tmp
+*.temp
+*.log
+*.db
+*.sqlite
+*.sqlite3
+
+# CI/CD files
+codecov.yml
+deny.toml
+pre-commit.sh
+.pre-commit-config.yaml
+
+# Documentation (not needed for build)
+*.md
+!README.md
+docs/
+doc/
+
+# Media files in example (will be handled separately)
+example/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.mp3
+*.mp4
+*.wav
+*.ogg
+
+# Docker files themselves (avoid recursion)
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# Railway files
+railway.toml
+
+# Backup and patch files
+*.bak
+*.backup
+*.orig
+*.patch
+*.diff

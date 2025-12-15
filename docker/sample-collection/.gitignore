@@ -1,0 +1,12 @@
+# Hashcards runtime files
+hashcards.db
+hashcards.db-*
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+.DS_Store
+Thumbs.db

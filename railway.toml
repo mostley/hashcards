@@ -1,0 +1,46 @@
+# Railway configuration for hashcards deployment
+# This file is optional - Railway will auto-detect most settings from the Dockerfile
+
+[build]
+# Use Docker for building the application
+builder = "docker"
+
+# Optional: specify Dockerfile path if not in root
+# dockerfilePath = "Dockerfile"
+
+[deploy]
+# The command to start the application (handled by entrypoint.sh)
+# startCommand is optional when using ENTRYPOINT in Dockerfile
+# startCommand = "/app/entrypoint.sh"
+
+# Restart policy for the service
+restartPolicyType = "on-failure"
+restartPolicyMaxRetries = 3
+
+# Health check settings (defined in Dockerfile, but can be overridden here)
+# healthcheckPath = "/"
+# healthcheckTimeout = 3
+# healthcheckInterval = 30
+
+[variables]
+# Environment variables for production deployment
+# These can also be set in the Railway dashboard
+
+# Logging level for the application
+RUST_LOG = "info"
+
+# Optional: Override default collection directory
+# COLLECTION_DIR = "/data"
+
+# Note: PORT is automatically set by Railway
+# Do not set PORT here - let Railway manage it
+
+[volumes]
+# Mount a persistent volume for the SQLite database and collection data
+# This ensures data persists across deployments
+#
+# Example volume mount (adjust path as needed):
+# "/data" = { mount = "/data", size = "1GB" }
+
+# Note: Railway volumes syntax may vary - check Railway documentation
+# for the current volume configuration format
